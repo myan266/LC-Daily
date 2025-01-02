@@ -18,7 +18,7 @@ public:
     }
 };
 
-// O(Q log N) with sparse table
+// O(Q log N + N log N) with sparse table
 class Solution {
 private:
     const int K = 20;
