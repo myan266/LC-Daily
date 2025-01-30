@@ -40,7 +40,7 @@ public:
             vector<int> dist(n, -1);
             q.push(start);
             dist[start] = 0;
-            int farthestNode = start, maxDist = 0;
+            int maxDist = 0;
 
             while (!q.empty()) {
                 int u = q.front(); q.pop();
@@ -50,7 +50,6 @@ public:
                         q.push(v);
                         if (dist[v] > maxDist) {
                             maxDist = dist[v];
-                            farthestNode = v;
                         }
                     }
                 }
