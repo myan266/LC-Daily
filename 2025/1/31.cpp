@@ -91,3 +91,61 @@ public:
         return maxIsland;
     }
 };
+
+// slower bfs solution
+class Solution {
+private:
+    const int di[4] = {1, -1, 0, 0};
+    const int dj[4] = {0, 0, 1, -1};
+public:
+    int largestIsland(vector<vector<int>>& grid) {
+        int n = grid.size();
+        vector<vector<int>> island(n, vector<int>(n, 0));
+        vector<int> sz;
+
+        int cnt = 0, maxsz = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (island[i][j] || !grid[i][j]) continue;
+                ++cnt;
+                int size = 0;
+
+                queue<pair<int, int>> rocks;
+                rocks.push({i, j});
+                island[i][j] = cnt; // Mark before pushing
+                while (!rocks.empty()) {
+                    auto [u, v] = rocks.front();
+                    rocks.pop();
+                    size++;
+
+                    for (int r = 0; r < 4; r++) {
+                        int ni = u + di[r], nj = v + dj[r];
+                        if (ni < 0 || nj < 0 || ni >= n || nj >= n || island[ni][nj] || !grid[ni][nj]) continue;
+                        island[ni][nj] = cnt; // Mark before pushing
+                        rocks.push({ni, nj});
+                    }
+                }
+                sz.push_back(size);
+                maxsz = max(size, maxsz);
+            }
+        }
+
+        int ans = maxsz + 1; 
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j]) continue;
+                int cur = 1;
+                unordered_set<int> adj;
+                for (int d = 0; d < 4; d++) {
+                    int ni = i + di[d], nj = j + dj[d];
+                    if (ni < 0 || nj < 0 || ni >= n || nj >= n || island[ni][nj] == 0) continue;
+                    adj.insert(island[ni][nj] - 1); // Ensure valid index
+                }
+                for (int a : adj) cur += sz[a];
+                ans = max(ans, cur);
+            }
+        }
+        return min(n*n, ans);
+    }
+};
+
